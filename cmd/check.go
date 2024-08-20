@@ -43,9 +43,12 @@ func runCheck(cmd *cobra.Command, args []string) {
 
 		tasks[i-1].Checked = true
 	}
+	todo.OrderPositions(&tasks)
 
 	err = todo.WriteTasks(dataFile, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
+
+	showTasks(tasks, true)
 }

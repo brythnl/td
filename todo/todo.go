@@ -56,7 +56,5 @@ func ReadTasks(filename string) ([]Task, error) {
 		return nil, err
 	}
 
-	OrderPositions(&tasks)
-
 	return tasks, nil
 }

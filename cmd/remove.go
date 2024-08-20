@@ -69,4 +69,6 @@ func runRemove(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
+
+	showTasks(tasks, true)
 }

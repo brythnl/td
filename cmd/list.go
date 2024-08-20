@@ -30,6 +30,18 @@ func init() {
 	listCmd.Flags().BoolVarP(&checkedOpt, "checked", "x", false, "Show checked")
 }
 
+// showTasks prints the tasks in the given slice.
+//
+// If showAll is true, all tasks are shown (checked and unchecked).
+func showTasks(tasks []todo.Task, showAll bool) {
+	for _, t := range tasks {
+		// Show only unchecked tasks by default
+		if showAll || allOpt || t.Checked == checkedOpt {
+			fmt.Println(t.Prefix(), t.Text)
+		}
+	}
+}
+
 func runList(cmd *cobra.Command, args []string) {
 	dataFile := viper.GetString("datafile")
 	tasks, err := todo.ReadTasks(dataFile)
@@ -37,10 +49,5 @@ func runList(cmd *cobra.Command, args []string) {
 		log.Printf("%v\n", err)
 	}
 
-	for _, t := range tasks {
-		// Show only unchecked tasks by default
-		if allOpt || t.Checked == checkedOpt {
-			fmt.Println(t.Prefix(), t.Text)
-		}
-	}
+	showTasks(tasks, false)
 }
