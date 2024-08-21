@@ -24,9 +24,9 @@ func (t *Task) Prefix() string {
 }
 
 // OrderPositions reorders the Position field of the tasks.
-func OrderPositions(tasks *[]Task) {
-	for i := range *tasks {
-		(*tasks)[i].Position = i + 1
+func OrderPositions(tasks []Task) {
+	for i := range tasks {
+		tasks[i].Position = i + 1
 	}
 }
 

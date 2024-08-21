@@ -39,7 +39,6 @@ func runUncheck(cmd *cobra.Command, args []string) {
 
 		tasks[i-1].Checked = false
 	}
-	todo.OrderPositions(&tasks)
 
 	err = todo.WriteTasks(dataFile, tasks)
 	if err != nil {

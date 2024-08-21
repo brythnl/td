@@ -63,7 +63,7 @@ func runRemove(cmd *cobra.Command, args []string) {
 	}
 
 	tasks = RemoveTasks(tasks, argsToPositions(args, len(tasks)))
-	todo.OrderPositions(&tasks)
+	todo.OrderPositions(tasks)
 
 	err = todo.WriteTasks(dataFile, tasks)
 	if err != nil {

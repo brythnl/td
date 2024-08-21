@@ -31,7 +31,7 @@ func runAdd(cmd *cobra.Command, args []string) {
 		task := todo.Task{Text: t}
 		tasks = append(tasks, task)
 	}
-	todo.OrderPositions(&tasks)
+	todo.OrderPositions(tasks)
 
 	if err := todo.WriteTasks(dataFile, tasks); err != nil {
 		log.Printf("%v\n", err)
