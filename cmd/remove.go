@@ -23,7 +23,8 @@ func init() {
 	rootCmd.AddCommand(removeCmd)
 }
 
-func RemoveTasks(tasks []todo.Task, positions []int) []todo.Task {
+// removeTasks removes tasks of the passed in positions
+func removeTasks(tasks []todo.Task, positions []int) []todo.Task {
 	return slices.DeleteFunc(tasks, func(t todo.Task) bool {
 		for _, p := range positions {
 			if t.Position == p {
@@ -62,7 +63,7 @@ func runRemove(cmd *cobra.Command, args []string) {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
 
-	tasks = RemoveTasks(tasks, argsToPositions(args, len(tasks)))
+	tasks = removeTasks(tasks, argsToPositions(args, len(tasks)))
 	todo.OrderPositions(tasks)
 
 	err = todo.WriteTasks(dataFile, tasks)

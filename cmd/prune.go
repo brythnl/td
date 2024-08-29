@@ -33,7 +33,7 @@ func runPrune(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	tasks = RemoveTasks(tasks, checkedPositions)
+	tasks = removeTasks(tasks, checkedPositions)
 	todo.OrderPositions(tasks)
 
 	err = todo.WriteTasks(dataFile, tasks)
