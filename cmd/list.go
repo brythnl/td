@@ -40,6 +40,7 @@ func showTasks(tasks []todo.Task, showAll bool) {
 			fmt.Println(t.Prefix(), t.Text)
 		}
 	}
+	fmt.Println()
 }
 
 func runList(cmd *cobra.Command, args []string) {
