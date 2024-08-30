@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -70,4 +71,21 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+// argsToPositions converts passed arguments (strings) into positions (integers).
+func argsToPositions(args []string, tasksCount int) []int {
+	positions := make([]int, 0, len(args))
+	for _, arg := range args {
+		p, err := strconv.Atoi(arg)
+		if err != nil {
+			log.Fatalln(arg, "is not a valid task number -", err)
+		}
+		if p < 1 || p > tasksCount {
+			log.Fatalln("Task", arg, "is not available in the list")
+		}
+		positions = append(positions, p)
+	}
+
+	return positions
 }

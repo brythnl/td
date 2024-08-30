@@ -28,6 +28,10 @@ func runUncheck(cmd *cobra.Command, args []string) {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
 
+	if len(args) < 1 {
+		log.Fatalln("Provide at least one task (number) to uncheck")
+	}
+
 	for _, arg := range args {
 		i, err := strconv.Atoi(arg)
 		if err != nil {
@@ -36,7 +40,6 @@ func runUncheck(cmd *cobra.Command, args []string) {
 		if i < 1 || i > len(tasks) {
 			log.Fatalln("Task", args[0], "is not available in the list")
 		}
-
 		tasks[i-1].Checked = false
 	}
 

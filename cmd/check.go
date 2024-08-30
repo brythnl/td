@@ -30,8 +30,9 @@ func runCheck(cmd *cobra.Command, args []string) {
 	}
 
 	if len(args) < 1 {
-		log.Fatalln("Invalid number of arguments")
+		log.Fatalln("Provide at least one task (number) to check")
 	}
+
 	for _, arg := range args {
 		i, err := strconv.Atoi(arg)
 		if err != nil {
@@ -40,7 +41,6 @@ func runCheck(cmd *cobra.Command, args []string) {
 		if i < 1 || i > len(tasks) {
 			log.Fatalln("Task", args[0], "is not available in the list")
 		}
-
 		tasks[i-1].Checked = true
 	}
 

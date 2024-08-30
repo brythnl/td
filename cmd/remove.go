@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 	"slices"
-	"strconv"
 
 	"github.com/brythnl/td/todo"
 
@@ -35,32 +34,15 @@ func removeTasks(tasks []todo.Task, positions []int) []todo.Task {
 	})
 }
 
-// argsToPositions converts passed arguments (strings) into positions (integers).
-func argsToPositions(args []string, tasksCount int) []int {
-	if len(args) < 1 {
-		log.Fatalln("Provide at least one argument (task number)")
-	}
-
-	positions := make([]int, len(args))
-	for _, arg := range args {
-		p, err := strconv.Atoi(arg)
-		if err != nil {
-			log.Fatalln(arg, "is not a valid task number -", err)
-		}
-		if p < 1 || p > tasksCount {
-			log.Fatalln("Task", arg, "is not available in the list")
-		}
-		positions = append(positions, p)
-	}
-
-	return positions
-}
-
 func runRemove(cmd *cobra.Command, args []string) {
 	dataFile := viper.GetString("datafile")
 	tasks, err := todo.ReadTasks(dataFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
+	}
+
+	if len(args) < 1 {
+		log.Fatalln("Provide at least one task (number) to remove")
 	}
 
 	tasks = removeTasks(tasks, argsToPositions(args, len(tasks)))
