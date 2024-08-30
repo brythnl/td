@@ -9,11 +9,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+// uncheckCmd represents the uncheck command
 var uncheckCmd = &cobra.Command{
 	Use:     "uncheck",
 	Aliases: []string{"ux"},
-	Short:   "Uncheck a task (number)",
-	Long:    `Uncheck a task (number)`,
+	Short:   "Uncheck a task",
+	Long:    `Uncheck a task`,
 	Run:     runUncheck,
 }
 

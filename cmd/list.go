@@ -15,6 +15,7 @@ var (
 	checkedOpt bool
 )
 
+// listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},

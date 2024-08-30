@@ -10,11 +10,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+// checkCmd represents the check command
 var checkCmd = &cobra.Command{
 	Use:     "check",
 	Aliases: []string{"x"},
-	Short:   "Check a task (number) to mark it as done",
-	Long:    `Check a task (number) to mark it as done`,
+	Short:   "Check a task to mark it as done",
+	Long:    `Check a task to mark it as done`,
 	Run:     runCheck,
 }
 

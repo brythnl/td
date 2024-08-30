@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// pruneCmd represents the prune command
 var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Remove all checked tasks",

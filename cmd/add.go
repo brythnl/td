@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a new task",

@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"e", "ed"},
