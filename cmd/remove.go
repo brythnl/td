@@ -24,7 +24,7 @@ var removeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(removeCmd)
 
-	removeCmd.Flags().BoolVarP(&removeAllOpt, "all", "a", false, "Remove all")
+	removeCmd.Flags().BoolVarP(&removeAllOpt, "all", "a", false, "all tasks")
 }
 
 // removeTasks removes tasks of the passed in positions

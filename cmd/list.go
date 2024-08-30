@@ -27,8 +27,8 @@ var listCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(listCmd)
 
-	listCmd.Flags().BoolVarP(&listAllOpt, "all", "a", false, "Show all")
-	listCmd.Flags().BoolVarP(&listCheckedOpt, "checked", "x", false, "Show checked")
+	listCmd.Flags().BoolVarP(&listAllOpt, "all", "a", false, "all tasks")
+	listCmd.Flags().BoolVarP(&listCheckedOpt, "checked", "x", false, "checked tasks")
 }
 
 // showTasks prints the tasks in the given slice.

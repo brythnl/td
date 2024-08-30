@@ -24,7 +24,7 @@ var checkCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(checkCmd)
 
-	checkCmd.Flags().BoolVarP(&checkAllOpt, "all", "a", false, "Check all")
+	checkCmd.Flags().BoolVarP(&checkAllOpt, "all", "a", false, "all tasks")
 }
 
 func runCheck(cmd *cobra.Command, args []string) {

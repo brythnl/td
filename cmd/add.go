@@ -13,16 +13,17 @@ var addPositionOpt int
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Add a new task",
-	Long:  `Add a new task`,
-	Run:   runAdd,
+	Use:     "add",
+	Aliases: []string{"a"},
+	Short:   "Add a new task",
+	Long:    `Add a new task`,
+	Run:     runAdd,
 }
 
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	addCmd.Flags().IntVarP(&addPositionOpt, "position", "p", -1, "Position of the new task")
+	addCmd.Flags().IntVarP(&addPositionOpt, "position", "p", -1, "position of the new task")
 }
 
 func runAdd(cmd *cobra.Command, args []string) {

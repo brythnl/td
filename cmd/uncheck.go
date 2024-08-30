@@ -23,7 +23,7 @@ var uncheckCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(uncheckCmd)
 
-	uncheckCmd.Flags().BoolVarP(&uncheckAllOpt, "all", "a", false, "Uncheck all")
+	uncheckCmd.Flags().BoolVarP(&uncheckAllOpt, "all", "a", false, "all tasks")
 }
 
 func runUncheck(cmd *cobra.Command, args []string) {
