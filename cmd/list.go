@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	allOpt     bool
-	checkedOpt bool
+	listAllOpt     bool
+	listCheckedOpt bool
 )
 
 // listCmd represents the list command
@@ -27,8 +27,8 @@ var listCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(listCmd)
 
-	listCmd.Flags().BoolVarP(&allOpt, "all", "a", false, "Show all")
-	listCmd.Flags().BoolVarP(&checkedOpt, "checked", "x", false, "Show checked")
+	listCmd.Flags().BoolVarP(&listAllOpt, "all", "a", false, "Show all")
+	listCmd.Flags().BoolVarP(&listCheckedOpt, "checked", "x", false, "Show checked")
 }
 
 // showTasks prints the tasks in the given slice.
@@ -37,7 +37,7 @@ func init() {
 func showTasks(tasks []todo.Task, showAll bool) {
 	for _, t := range tasks {
 		// Show only unchecked tasks by default
-		if showAll || allOpt || t.Checked == checkedOpt {
+		if showAll || listAllOpt || t.Checked == listCheckedOpt {
 			fmt.Println(t.Prefix(), t.Text)
 		}
 	}

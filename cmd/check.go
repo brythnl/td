@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var checkAllOpt bool
+
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
 	Use:     "check",
@@ -21,6 +23,8 @@ var checkCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(checkCmd)
+
+	checkCmd.Flags().BoolVarP(&checkAllOpt, "all", "a", false, "Check all")
 }
 
 func runCheck(cmd *cobra.Command, args []string) {
@@ -30,19 +34,25 @@ func runCheck(cmd *cobra.Command, args []string) {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
 
-	if len(args) < 1 {
-		log.Fatalln("Provide at least one task (number) to check")
-	}
+	if checkAllOpt {
+		for i := range tasks {
+			tasks[i].Checked = true
+		}
+	} else {
+		if len(args) < 1 {
+			log.Fatalln("Provide at least one task (number) to check")
+		}
 
-	for _, arg := range args {
-		i, err := strconv.Atoi(arg)
-		if err != nil {
-			log.Fatalln(arg, "is not a valid task number -", err)
+		for _, arg := range args {
+			i, err := strconv.Atoi(arg)
+			if err != nil {
+				log.Fatalln(arg, "is not a valid task number -", err)
+			}
+			if i < 1 || i > len(tasks) {
+				log.Fatalln("Task", args[0], "is not available in the list")
+			}
+			tasks[i-1].Checked = true
 		}
-		if i < 1 || i > len(tasks) {
-			log.Fatalln("Task", args[0], "is not available in the list")
-		}
-		tasks[i-1].Checked = true
 	}
 
 	err = todo.WriteTasks(dataFile, tasks)

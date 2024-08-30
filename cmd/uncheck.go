@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var uncheckAllOpt bool
+
 // uncheckCmd represents the uncheck command
 var uncheckCmd = &cobra.Command{
 	Use:     "uncheck",
@@ -20,6 +22,8 @@ var uncheckCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(uncheckCmd)
+
+	uncheckCmd.Flags().BoolVarP(&uncheckAllOpt, "all", "a", false, "Uncheck all")
 }
 
 func runUncheck(cmd *cobra.Command, args []string) {
@@ -29,19 +33,25 @@ func runUncheck(cmd *cobra.Command, args []string) {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
 
-	if len(args) < 1 {
-		log.Fatalln("Provide at least one task (number) to uncheck")
-	}
+	if uncheckAllOpt {
+		for i := range tasks {
+			tasks[i].Checked = false
+		}
+	} else {
+		if len(args) < 1 {
+			log.Fatalln("Provide at least one task (number) to uncheck")
+		}
 
-	for _, arg := range args {
-		i, err := strconv.Atoi(arg)
-		if err != nil {
-			log.Fatalln(arg, "is not a valid task number -", err)
+		for _, arg := range args {
+			i, err := strconv.Atoi(arg)
+			if err != nil {
+				log.Fatalln(arg, "is not a valid task number -", err)
+			}
+			if i < 1 || i > len(tasks) {
+				log.Fatalln("Task", args[0], "is not available in the list")
+			}
+			tasks[i-1].Checked = false
 		}
-		if i < 1 || i > len(tasks) {
-			log.Fatalln("Task", args[0], "is not available in the list")
-		}
-		tasks[i-1].Checked = false
 	}
 
 	err = todo.WriteTasks(dataFile, tasks)

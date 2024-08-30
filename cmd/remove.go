@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var removeAllOpt bool
+
 // removeCmd represents the remove command
 var removeCmd = &cobra.Command{
 	Use:     "remove",
@@ -21,6 +23,8 @@ var removeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(removeCmd)
+
+	removeCmd.Flags().BoolVarP(&removeAllOpt, "all", "a", false, "Remove all")
 }
 
 // removeTasks removes tasks of the passed in positions
@@ -42,12 +46,16 @@ func runRemove(cmd *cobra.Command, args []string) {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
 
-	if len(args) < 1 {
-		log.Fatalln("Provide at least one task (number) to remove")
-	}
+	if removeAllOpt {
+		tasks = []todo.Task{}
+	} else {
+		if len(args) < 1 {
+			log.Fatalln("Provide at least one task (number) to remove")
+		}
 
-	tasks = removeTasks(tasks, argsToPositions(args, len(tasks)))
-	todo.OrderPositions(tasks)
+		tasks = removeTasks(tasks, argsToPositions(args, len(tasks)))
+		todo.OrderPositions(tasks)
+	}
 
 	err = todo.WriteTasks(dataFile, tasks)
 	if err != nil {
