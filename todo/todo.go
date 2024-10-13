@@ -20,7 +20,7 @@ func (t *Task) Prefix() string {
 	if t.Checked {
 		checkbox = "[x]"
 	}
-	return checkbox + " " + strconv.Itoa(t.Position) + " >"
+	return checkbox + " " + strconv.Itoa(t.Position) + " > "
 }
 
 // OrderPositions reorders the Position field of the tasks.

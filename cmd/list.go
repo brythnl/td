@@ -35,13 +35,18 @@ func init() {
 //
 // If showAll is true, all tasks are shown (checked and unchecked).
 func showTasks(tasks []todo.Task, showAll bool) {
+	fmt.Println()
+	if len(tasks) == 0 {
+		fmt.Println("All done!")
+		return
+	}
+
 	for _, t := range tasks {
 		// Show only unchecked tasks by default
 		if showAll || listAllOpt || t.Checked == listCheckedOpt {
-			fmt.Println(t.Prefix(), t.Text)
+			fmt.Print(t.Prefix(), t.Text, "\n\n")
 		}
 	}
-	fmt.Println()
 }
 
 func runList(cmd *cobra.Command, args []string) {
