@@ -51,7 +51,14 @@ func runCheck(cmd *cobra.Command, args []string) {
 			if i < 1 || i > len(tasks) {
 				log.Fatalln("Task", args[0], "is not available in the list")
 			}
-			tasks[i-1].Checked = true
+
+			checkedTask := tasks[i-1]
+			checkedTask.Checked = true
+
+			// Move checked task to end of list
+			tasks = append(tasks[:i-1], tasks[i:]...)
+			tasks = append(tasks, checkedTask)
+			todo.OrderPositions(tasks)
 		}
 	}
 
