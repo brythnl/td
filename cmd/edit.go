@@ -23,8 +23,8 @@ func init() {
 }
 
 func runEdit(cmd *cobra.Command, args []string) {
-	project := td.GetProjectFile()
-	tasks, err := td.ReadTasks(project)
+	projectName, projectFile := td.GetProject()
+	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -46,10 +46,10 @@ func runEdit(cmd *cobra.Command, args []string) {
 
 	tasks[p-1].Text = args[1]
 
-	err = td.WriteTasks(project, tasks)
+	err = td.WriteTasks(projectFile, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowUnchecked)
+	td.ShowTasks(tasks, td.ShowUnchecked, projectName)
 }

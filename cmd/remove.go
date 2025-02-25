@@ -34,8 +34,8 @@ func removeTasks(tasks []td.Task, positions []int) []td.Task {
 }
 
 func runRemove(cmd *cobra.Command, args []string) {
-	project := td.GetProjectFile()
-	tasks, err := td.ReadTasks(project)
+	projectName, projectFile := td.GetProject()
+	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -51,10 +51,10 @@ func runRemove(cmd *cobra.Command, args []string) {
 		td.OrderPositions(tasks)
 	}
 
-	err = td.WriteTasks(project, tasks)
+	err = td.WriteTasks(projectFile, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowAll)
+	td.ShowTasks(tasks, td.ShowAll, projectName)
 }

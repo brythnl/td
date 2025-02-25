@@ -26,8 +26,8 @@ func init() {
 }
 
 func add(args []string) {
-	project := td.GetProjectFile()
-	tasks, err := td.ReadTasks(project)
+	projectName, projectFile := td.GetProject()
+	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
@@ -52,9 +52,9 @@ func add(args []string) {
 
 	td.OrderPositions(tasks)
 
-	if err := td.WriteTasks(project, tasks); err != nil {
+	if err := td.WriteTasks(projectFile, tasks); err != nil {
 		log.Printf("%v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowUnchecked)
+	td.ShowTasks(tasks, td.ShowUnchecked, projectName)
 }

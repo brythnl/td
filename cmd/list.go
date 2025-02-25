@@ -40,13 +40,13 @@ func runList(cmd *cobra.Command, args []string) {
 	}
 
 	if len(args) == 0 {
-		project = td.GetProjectFile()
-		tasks, err := td.ReadTasks(project)
+		projectName, projectFile := td.GetProject()
+		tasks, err := td.ReadTasks(projectFile)
 		if err != nil {
-			log.Printf("%v\n", err)
+			log.Fatalf("%v\n", err)
 		}
 
-		td.ShowTasks(tasks, option)
+		td.ShowTasks(tasks, option, projectName)
 		return
 	}
 
@@ -61,10 +61,10 @@ func runList(cmd *cobra.Command, args []string) {
 		project = filepath.Join(home, ".td", "projects", projectName+".json")
 		tasks, err := td.ReadTasks(project)
 		if err != nil {
-			log.Printf("%v\n", err)
+			log.Fatalf("%v\n", err)
 		}
 
-		td.ShowTasks(tasks, option)
+		td.ShowTasks(tasks, option, projectName)
 		return
 	}
 }

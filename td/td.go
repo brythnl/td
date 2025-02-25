@@ -36,14 +36,14 @@ func OrderPositions(tasks []Task) {
 	}
 }
 
-// GetProjectFile gets path of the project file
-func GetProjectFile() string {
+// GetProject gets path of the project file and the project name
+func GetProject() (string, string) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalf("Unable to detect home directory: %v\n", err)
 	}
 	project := viper.GetString("project")
-	return filepath.Join(home, ".td", "projects", project+".json")
+	return project, filepath.Join(home, ".td", "projects", project+".json")
 }
 
 // WriteTasks writes tasks data to JSON file.
@@ -84,8 +84,8 @@ const (
 )
 
 // showTasks prints the tasks in the given slice.
-func ShowTasks(tasks []Task, opt ShowOption) {
-	header := "Project: " + viper.GetString("project")
+func ShowTasks(tasks []Task, opt ShowOption, projectName string) {
+	header := "Project: " + projectName
 	sep := strings.Repeat("=", len(header))
 	fmt.Println(sep)
 	fmt.Println(header)
