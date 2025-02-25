@@ -4,7 +4,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 
 	"github.com/spf13/cobra"
 )
@@ -23,8 +23,8 @@ func init() {
 }
 
 func runEdit(cmd *cobra.Command, args []string) {
-	project := todo.GetProjectFile()
-	tasks, err := todo.ReadTasks(project)
+	project := td.GetProjectFile()
+	tasks, err := td.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -46,10 +46,10 @@ func runEdit(cmd *cobra.Command, args []string) {
 
 	tasks[p-1].Text = args[1]
 
-	err = todo.WriteTasks(project, tasks)
+	err = td.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	todo.ShowTasks(tasks, todo.ShowUnchecked)
+	td.ShowTasks(tasks, td.ShowUnchecked)
 }

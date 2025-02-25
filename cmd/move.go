@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 
 	"slices"
 
@@ -24,8 +24,8 @@ func init() {
 }
 
 func runMove(cmd *cobra.Command, args []string) {
-	project := todo.GetProjectFile()
-	tasks, err := todo.ReadTasks(project)
+	project := td.GetProjectFile()
+	tasks, err := td.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -45,14 +45,14 @@ func runMove(cmd *cobra.Command, args []string) {
 	// Insert the task to move at the target position
 	tasks = append(
 		tasks[:targetIdx],
-		append([]todo.Task{taskToMove}, tasks[targetIdx:]...)...)
+		append([]td.Task{taskToMove}, tasks[targetIdx:]...)...)
 
-	todo.OrderPositions(tasks)
+	td.OrderPositions(tasks)
 
-	err = todo.WriteTasks(project, tasks)
+	err = td.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	todo.ShowTasks(tasks, todo.ShowAll)
+	td.ShowTasks(tasks, td.ShowAll)
 }

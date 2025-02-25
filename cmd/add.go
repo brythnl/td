@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 
 	"github.com/spf13/cobra"
 )
@@ -26,15 +26,15 @@ func init() {
 }
 
 func add(args []string) {
-	project := todo.GetProjectFile()
-	tasks, err := todo.ReadTasks(project)
+	project := td.GetProjectFile()
+	tasks, err := td.ReadTasks(project)
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
 
 	if addPositionOpt == -1 {
 		for _, t := range args {
-			task := todo.Task{Text: t}
+			task := td.Task{Text: t}
 			tasks = append(tasks, task)
 		}
 	} else {
@@ -43,18 +43,18 @@ func add(args []string) {
 		}
 
 		targetIdx := addPositionOpt - 1
-		task := todo.Task{Text: args[0]}
+		task := td.Task{Text: args[0]}
 		// Insert the task to move at the target position
 		tasks = append(
 			tasks[:targetIdx],
-			append([]todo.Task{task}, tasks[targetIdx:]...)...)
+			append([]td.Task{task}, tasks[targetIdx:]...)...)
 	}
 
-	todo.OrderPositions(tasks)
+	td.OrderPositions(tasks)
 
-	if err := todo.WriteTasks(project, tasks); err != nil {
+	if err := td.WriteTasks(project, tasks); err != nil {
 		log.Printf("%v\n", err)
 	}
 
-	todo.ShowTasks(tasks, todo.ShowUnchecked)
+	td.ShowTasks(tasks, td.ShowUnchecked)
 }

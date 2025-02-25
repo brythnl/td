@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 	"github.com/spf13/cobra"
 )
 
@@ -20,8 +20,8 @@ func init() {
 }
 
 func runPrune(cmd *cobra.Command, args []string) {
-	project := todo.GetProjectFile()
-	tasks, err := todo.ReadTasks(project)
+	project := td.GetProjectFile()
+	tasks, err := td.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -34,12 +34,12 @@ func runPrune(cmd *cobra.Command, args []string) {
 	}
 
 	tasks = removeTasks(tasks, checkedPositions)
-	todo.OrderPositions(tasks)
+	td.OrderPositions(tasks)
 
-	err = todo.WriteTasks(project, tasks)
+	err = td.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	todo.ShowTasks(tasks, todo.ShowUnchecked)
+	td.ShowTasks(tasks, td.ShowUnchecked)
 }

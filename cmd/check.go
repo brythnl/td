@@ -4,7 +4,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 
 	"slices"
 
@@ -29,8 +29,8 @@ func init() {
 }
 
 func runCheck(cmd *cobra.Command, args []string) {
-	project := todo.GetProjectFile()
-	tasks, err := todo.ReadTasks(project)
+	project := td.GetProjectFile()
+	tasks, err := td.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -61,14 +61,14 @@ func runCheck(cmd *cobra.Command, args []string) {
 			// each task to be checked is moved to the end of the list, thus replacing itself
 			tasks = slices.Delete(tasks, i-1, i)
 			tasks = append(tasks, checkedTask)
-			todo.OrderPositions(tasks)
+			td.OrderPositions(tasks)
 		}
 	}
 
-	err = todo.WriteTasks(project, tasks)
+	err = td.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	todo.ShowTasks(tasks, todo.ShowAll)
+	td.ShowTasks(tasks, td.ShowAll)
 }

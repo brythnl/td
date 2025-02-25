@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/brythnl/td/todo"
+	"github.com/brythnl/td/td"
 
 	"github.com/spf13/cobra"
 )
@@ -32,21 +32,21 @@ func init() {
 }
 
 func runList(cmd *cobra.Command, args []string) {
-	option := todo.ShowUnchecked
+	option := td.ShowUnchecked
 	if listAllOpt {
-		option = todo.ShowAll
+		option = td.ShowAll
 	} else if listCheckedOpt {
-		option = todo.ShowChecked
+		option = td.ShowChecked
 	}
 
 	if len(args) == 0 {
-		project = todo.GetProjectFile()
-		tasks, err := todo.ReadTasks(project)
+		project = td.GetProjectFile()
+		tasks, err := td.ReadTasks(project)
 		if err != nil {
 			log.Printf("%v\n", err)
 		}
 
-		todo.ShowTasks(tasks, option)
+		td.ShowTasks(tasks, option)
 		return
 	}
 
@@ -59,12 +59,12 @@ func runList(cmd *cobra.Command, args []string) {
 	for _, arg := range args {
 		projectName := arg
 		project = filepath.Join(home, ".td", "projects", projectName+".json")
-		tasks, err := todo.ReadTasks(project)
+		tasks, err := td.ReadTasks(project)
 		if err != nil {
 			log.Printf("%v\n", err)
 		}
 
-		todo.ShowTasks(tasks, option)
+		td.ShowTasks(tasks, option)
 		return
 	}
 }

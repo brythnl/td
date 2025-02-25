@@ -1,4 +1,4 @@
-package todo
+package td
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -84,7 +85,12 @@ const (
 
 // showTasks prints the tasks in the given slice.
 func ShowTasks(tasks []Task, opt ShowOption) {
-	fmt.Println()
+	header := "Project: " + viper.GetString("project")
+	sep := strings.Repeat("=", len(header))
+	fmt.Println(sep)
+	fmt.Println(header)
+	fmt.Println(sep)
+
 	if len(tasks) == 0 {
 		fmt.Println("All done!")
 		return
