@@ -6,7 +6,6 @@ import (
 
 	"github.com/brythnl/td/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var uncheckAllOpt bool
@@ -27,8 +26,8 @@ func init() {
 }
 
 func runUncheck(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -54,10 +53,10 @@ func runUncheck(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, true)
+	todo.ShowTasks(tasks, todo.ShowAll)
 }

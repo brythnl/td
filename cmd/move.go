@@ -5,8 +5,9 @@ import (
 
 	"github.com/brythnl/td/todo"
 
+	"slices"
+
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // moveCmd represents the move command
@@ -23,8 +24,8 @@ func init() {
 }
 
 func runMove(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -40,7 +41,7 @@ func runMove(cmd *cobra.Command, args []string) {
 	taskToMove := tasks[currIdx]
 
 	// Remove the task to move
-	tasks = append(tasks[:currIdx], tasks[currIdx+1:]...)
+	tasks = slices.Delete(tasks, currIdx, currIdx+1)
 	// Insert the task to move at the target position
 	tasks = append(
 		tasks[:targetIdx],
@@ -48,10 +49,10 @@ func runMove(cmd *cobra.Command, args []string) {
 
 	todo.OrderPositions(tasks)
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, true)
+	todo.ShowTasks(tasks, todo.ShowAll)
 }

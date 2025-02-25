@@ -4,13 +4,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var dataFile, configFile string
+// TODO: get value from persisted current project in config file
+var project string
+var configFile string
+
+var sep = string(os.PathSeparator)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -37,19 +42,12 @@ func init() {
 
 	home, err := os.UserHomeDir()
 	if err != nil {
-		log.Println(
-			"Unable to detect home directory. Set data file manually with --datafile or -d.",
-		)
+		log.Fatalf("Unable to detect home directory: %v\n", err)
 	}
 
 	// Set flag for file to store config
 	rootCmd.PersistentFlags().
-		StringVarP(&configFile, "config", "c", home+string(os.PathSeparator)+".td.yaml", "configuration file")
-
-	// Set flag for file to store data
-	rootCmd.PersistentFlags().
-		StringVarP(&dataFile, "datafile", "d", home+string(os.PathSeparator)+".td.json", "file to store tasks data")
-	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile"))
+		StringVarP(&configFile, "config", "c", filepath.Join(home, ".td", "config.yaml"), "configuration file")
 }
 
 func initConfig() {
@@ -61,16 +59,18 @@ func initConfig() {
 			log.Println("Unable to detect home directory.")
 		}
 
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".td")
+		viper.AddConfigPath(filepath.Join(home, ".td"))
+		viper.SetConfigName("config")
 	}
 
 	viper.SetEnvPrefix("td")
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Printf("Error reading config file: %s\n", err)
 	}
+
+	project = viper.GetString("project")
 }
 
 // argsToPositions converts passed arguments (strings) into positions (integers).

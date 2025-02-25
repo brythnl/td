@@ -5,7 +5,6 @@ import (
 
 	"github.com/brythnl/td/todo"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // pruneCmd represents the prune command
@@ -21,8 +20,8 @@ func init() {
 }
 
 func runPrune(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -37,10 +36,10 @@ func runPrune(cmd *cobra.Command, args []string) {
 	tasks = removeTasks(tasks, checkedPositions)
 	todo.OrderPositions(tasks)
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, false)
+	todo.ShowTasks(tasks, todo.ShowUnchecked)
 }

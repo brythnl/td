@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/brythnl/td/todo"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -31,30 +31,40 @@ func init() {
 	listCmd.Flags().BoolVarP(&listCheckedOpt, "checked", "x", false, "checked tasks")
 }
 
-// showTasks prints the tasks in the given slice.
-//
-// If showAll is true, all tasks are shown (checked and unchecked).
-func showTasks(tasks []todo.Task, showAll bool) {
-	fmt.Println()
-	if len(tasks) == 0 {
-		fmt.Println("All done!")
+func runList(cmd *cobra.Command, args []string) {
+	option := todo.ShowUnchecked
+	if listAllOpt {
+		option = todo.ShowAll
+	} else if listCheckedOpt {
+		option = todo.ShowChecked
+	}
+
+	if len(args) == 0 {
+		project = todo.GetProjectFile()
+		tasks, err := todo.ReadTasks(project)
+		if err != nil {
+			log.Printf("%v\n", err)
+		}
+
+		todo.ShowTasks(tasks, option)
 		return
 	}
 
-	for _, t := range tasks {
-		// Show only unchecked tasks by default
-		if showAll || listAllOpt || t.Checked == listCheckedOpt {
-			fmt.Print(t.Prefix(), t.Text, "\n\n")
-		}
-	}
-}
-
-func runList(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	home, err := os.UserHomeDir()
 	if err != nil {
-		log.Printf("%v\n", err)
+		log.Fatalf("Unable to detect home directory: %v\n", err)
+		return
 	}
 
-	showTasks(tasks, false)
+	for _, arg := range args {
+		projectName := arg
+		project = filepath.Join(home, ".td", "projects", projectName+".json")
+		tasks, err := todo.ReadTasks(project)
+		if err != nil {
+			log.Printf("%v\n", err)
+		}
+
+		todo.ShowTasks(tasks, option)
+		return
+	}
 }

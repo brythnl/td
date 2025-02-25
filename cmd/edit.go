@@ -7,7 +7,6 @@ import (
 	"github.com/brythnl/td/todo"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // editCmd represents the edit command
@@ -24,8 +23,8 @@ func init() {
 }
 
 func runEdit(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -47,10 +46,10 @@ func runEdit(cmd *cobra.Command, args []string) {
 
 	tasks[p-1].Text = args[1]
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, true)
+	todo.ShowTasks(tasks, todo.ShowUnchecked)
 }

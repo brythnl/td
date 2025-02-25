@@ -7,7 +7,6 @@ import (
 	"github.com/brythnl/td/todo"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var removeAllOpt bool
@@ -30,18 +29,13 @@ func init() {
 // removeTasks removes tasks of the passed in positions
 func removeTasks(tasks []todo.Task, positions []int) []todo.Task {
 	return slices.DeleteFunc(tasks, func(t todo.Task) bool {
-		for _, p := range positions {
-			if t.Position == p {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(positions, t.Position)
 	})
 }
 
 func runRemove(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -57,10 +51,10 @@ func runRemove(cmd *cobra.Command, args []string) {
 		todo.OrderPositions(tasks)
 	}
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, true)
+	todo.ShowTasks(tasks, todo.ShowAll)
 }

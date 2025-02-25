@@ -6,8 +6,9 @@ import (
 
 	"github.com/brythnl/td/todo"
 
+	"slices"
+
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var checkAllOpt bool
@@ -28,8 +29,8 @@ func init() {
 }
 
 func runCheck(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -56,16 +57,18 @@ func runCheck(cmd *cobra.Command, args []string) {
 			checkedTask.Checked = true
 
 			// Move checked task to end of list
-			tasks = append(tasks[:i-1], tasks[i:]...)
+			// BUG: when the user checks multiple tasks and it includes the last task,
+			// each task to be checked is moved to the end of the list, thus replacing itself
+			tasks = slices.Delete(tasks, i-1, i)
 			tasks = append(tasks, checkedTask)
 			todo.OrderPositions(tasks)
 		}
 	}
 
-	err = todo.WriteTasks(dataFile, tasks)
+	err = todo.WriteTasks(project, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	showTasks(tasks, true)
+	todo.ShowTasks(tasks, todo.ShowAll)
 }

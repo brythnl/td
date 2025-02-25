@@ -6,7 +6,6 @@ import (
 	"github.com/brythnl/td/todo"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var addPositionOpt int
@@ -17,7 +16,7 @@ var addCmd = &cobra.Command{
 	Aliases: []string{"a"},
 	Short:   "Add a new task",
 	Long:    `Add a new task`,
-	Run:     runAdd,
+	Run:     func(cmd *cobra.Command, args []string) { add(args) },
 }
 
 func init() {
@@ -26,9 +25,9 @@ func init() {
 	addCmd.Flags().IntVarP(&addPositionOpt, "position", "p", -1, "position of the new task")
 }
 
-func runAdd(cmd *cobra.Command, args []string) {
-	dataFile := viper.GetString("datafile")
-	tasks, err := todo.ReadTasks(dataFile)
+func add(args []string) {
+	project := todo.GetProjectFile()
+	tasks, err := todo.ReadTasks(project)
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
@@ -53,9 +52,9 @@ func runAdd(cmd *cobra.Command, args []string) {
 
 	todo.OrderPositions(tasks)
 
-	if err := todo.WriteTasks(dataFile, tasks); err != nil {
+	if err := todo.WriteTasks(project, tasks); err != nil {
 		log.Printf("%v\n", err)
 	}
 
-	showTasks(tasks, false)
+	todo.ShowTasks(tasks, todo.ShowUnchecked)
 }

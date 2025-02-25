@@ -2,8 +2,13 @@ package todo
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"os"
+	"path/filepath"
 	"strconv"
+
+	"github.com/spf13/viper"
 )
 
 type Task struct {
@@ -28,6 +33,16 @@ func OrderPositions(tasks []Task) {
 	for i := range tasks {
 		tasks[i].Position = i + 1
 	}
+}
+
+// GetProjectFile gets path of the project file
+func GetProjectFile() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("Unable to detect home directory: %v\n", err)
+	}
+	project := viper.GetString("project")
+	return filepath.Join(home, ".td", "projects", project+".json")
 }
 
 // WriteTasks writes tasks data to JSON file.
@@ -57,4 +72,36 @@ func ReadTasks(filename string) ([]Task, error) {
 	}
 
 	return tasks, nil
+}
+
+type ShowOption int
+
+const (
+	ShowAll ShowOption = iota
+	ShowChecked
+	ShowUnchecked
+)
+
+// showTasks prints the tasks in the given slice.
+func ShowTasks(tasks []Task, opt ShowOption) {
+	fmt.Println()
+	if len(tasks) == 0 {
+		fmt.Println("All done!")
+		return
+	}
+
+	for _, t := range tasks {
+		switch opt {
+		case ShowAll:
+			fmt.Print(t.Prefix(), t.Text, "\n\n")
+		case ShowChecked:
+			if t.Checked {
+				fmt.Print(t.Prefix(), t.Text, "\n\n")
+			}
+		case ShowUnchecked:
+			if !t.Checked {
+				fmt.Print(t.Prefix(), t.Text, "\n\n")
+			}
+		}
+	}
 }
