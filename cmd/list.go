@@ -20,7 +20,6 @@ var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "List the current tasks",
-	Long:    `List the current tasks`,
 	Run:     runList,
 }
 
@@ -40,7 +39,10 @@ func runList(cmd *cobra.Command, args []string) {
 	}
 
 	if len(args) == 0 {
-		projectName, projectFile := td.GetProject()
+		projectName, projectFile, err := td.GetProject()
+		if err != nil {
+			log.Fatalf("Unable to get current working project: %v\n", err)
+		}
 		tasks, err := td.ReadTasks(projectFile)
 		if err != nil {
 			log.Fatalf("%v\n", err)
@@ -53,7 +55,6 @@ func runList(cmd *cobra.Command, args []string) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalf("Unable to detect home directory: %v\n", err)
-		return
 	}
 
 	for _, arg := range args {

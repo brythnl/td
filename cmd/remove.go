@@ -16,7 +16,6 @@ var removeCmd = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm"},
 	Short:   "Remove a task",
-	Long:    `Remove a task`,
 	Run:     runRemove,
 }
 
@@ -34,7 +33,11 @@ func removeTasks(tasks []td.Task, positions []int) []td.Task {
 }
 
 func runRemove(cmd *cobra.Command, args []string) {
-	projectName, projectFile := td.GetProject()
+	projectName, projectFile, err := td.GetProject()
+	if err != nil {
+		log.Fatalf("Unable to get current working project: %v\n", err)
+	}
+
 	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)

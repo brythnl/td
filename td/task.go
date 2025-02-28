@@ -3,13 +3,9 @@ package td
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-
-	"github.com/spf13/viper"
 )
 
 type Task struct {
@@ -36,27 +32,15 @@ func OrderPositions(tasks []Task) {
 	}
 }
 
-// GetProject gets path of the project file and the project name
-func GetProject() (string, string) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("Unable to detect home directory: %v\n", err)
-	}
-	project := viper.GetString("project")
-	return project, filepath.Join(home, ".td", "projects", project+".json")
-}
-
 // WriteTasks writes tasks data to JSON file.
 func WriteTasks(filename string, tasks []Task) error {
 	data, err := json.Marshal(tasks)
 	if err != nil {
 		return err
 	}
-
 	if err := os.WriteFile(filename, data, 0644); err != nil {
 		return err
 	}
-
 	return nil
 }
 

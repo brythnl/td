@@ -15,7 +15,6 @@ var uncheckCmd = &cobra.Command{
 	Use:     "uncheck",
 	Aliases: []string{"ux"},
 	Short:   "Uncheck a task",
-	Long:    `Uncheck a task`,
 	Run:     runUncheck,
 }
 
@@ -26,7 +25,10 @@ func init() {
 }
 
 func runUncheck(cmd *cobra.Command, args []string) {
-	projectName, projectFile := td.GetProject()
+	projectName, projectFile, err := td.GetProject()
+	if err != nil {
+		log.Fatalf("Unable to get current working project: %v\n", err)
+	}
 	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)

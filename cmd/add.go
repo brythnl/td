@@ -15,7 +15,6 @@ var addCmd = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"a"},
 	Short:   "Add a new task",
-	Long:    `Add a new task`,
 	Run:     func(cmd *cobra.Command, args []string) { add(args) },
 }
 
@@ -26,7 +25,10 @@ func init() {
 }
 
 func add(args []string) {
-	projectName, projectFile := td.GetProject()
+	projectName, projectFile, err := td.GetProject()
+	if err != nil {
+		log.Fatalf("Unable to get current working project: %v\n", err)
+	}
 	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Printf("%v\n", err)

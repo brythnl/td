@@ -18,7 +18,6 @@ var checkCmd = &cobra.Command{
 	Use:     "check",
 	Aliases: []string{"x"},
 	Short:   "Check a task to mark it as done",
-	Long:    `Check a task to mark it as done`,
 	Run:     runCheck,
 }
 
@@ -29,7 +28,10 @@ func init() {
 }
 
 func runCheck(cmd *cobra.Command, args []string) {
-	projectName, projectFile := td.GetProject()
+	projectName, projectFile, err := td.GetProject()
+	if err != nil {
+		log.Fatalf("Unable to get current working project: %v\n", err)
+	}
 	tasks, err := td.ReadTasks(projectFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)

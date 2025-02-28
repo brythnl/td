@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// TODO: get value from persisted current project in config file
 var project string
 var configFile string
 
