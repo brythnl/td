@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/brythnl/td/td"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,13 +25,13 @@ func init() {
 }
 
 func add(args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Printf("%v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	if addPositionOpt == -1 {
@@ -41,7 +41,8 @@ func add(args []string) {
 		}
 	} else {
 		if len(args) > 1 {
-			log.Fatalln("Too many arguments. When using the -p option, only one task can be added.")
+			fmt.Println("Too many arguments. When using the -p option, only one task can be added")
+			return
 		}
 
 		targetIdx := addPositionOpt - 1
@@ -54,9 +55,10 @@ func add(args []string) {
 
 	td.OrderPositions(tasks)
 
-	if err := td.WriteTasks(projectFile, tasks); err != nil {
-		log.Printf("%v\n", err)
+	if err := td.WriteTasks(wpFile, tasks); err != nil {
+		log.Printf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowUnchecked, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowUnchecked)
 }

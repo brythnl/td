@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/brythnl/td/td"
-
 	"github.com/spf13/cobra"
 )
 
@@ -39,33 +38,35 @@ func runList(cmd *cobra.Command, args []string) {
 	}
 
 	if len(args) == 0 {
-		projectName, projectFile, err := td.GetProject()
+		wpName, wpFile, err := td.GetWorkingProject()
 		if err != nil {
-			log.Fatalf("Unable to get current working project: %v\n", err)
+			log.Fatalf("unable to get current working project: %v\n", err)
 		}
-		tasks, err := td.ReadTasks(projectFile)
+		tasks, err := td.ReadTasks(wpFile)
 		if err != nil {
-			log.Fatalf("%v\n", err)
+			log.Fatalf("unable to read tasks: %v\n", err)
 		}
 
-		td.ShowTasks(tasks, option, projectName)
+		td.PrintHeader(wpName)
+		td.PrintTasks(tasks, option)
 		return
 	}
 
 	home, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Unable to detect home directory: %v\n", err)
+		log.Fatalf("unable to detect home directory: %v\n", err)
 	}
 
 	for _, arg := range args {
-		projectName := arg
-		project = filepath.Join(home, ".td", "projects", projectName+".json")
-		tasks, err := td.ReadTasks(project)
+		pName := arg
+		pFile := filepath.Join(home, ".td", "projects", pName+".json")
+		// TODO: check if pFile exists
+		tasks, err := td.ReadTasks(pFile)
 		if err != nil {
-			log.Fatalf("%v\n", err)
+			log.Fatalf("unable to read tasks: %v\n", err)
 		}
 
-		td.ShowTasks(tasks, option, projectName)
-		return
+		td.PrintHeader(pName)
+		td.PrintTasks(tasks, option)
 	}
 }

@@ -1,13 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"slices"
 	"strconv"
 
 	"github.com/brythnl/td/td"
-
-	"slices"
-
 	"github.com/spf13/cobra"
 )
 
@@ -28,13 +27,13 @@ func init() {
 }
 
 func runCheck(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Fatalf("Read tasks error: %v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	if checkAllOpt {
@@ -43,16 +42,19 @@ func runCheck(cmd *cobra.Command, args []string) {
 		}
 	} else {
 		if len(args) < 1 {
-			log.Fatalln("Provide at least one task (number) to check")
+			fmt.Println("Provide at least one task (number) to check")
+			return
 		}
 
 		for _, arg := range args {
 			i, err := strconv.Atoi(arg)
 			if err != nil {
-				log.Fatalln(arg, "is not a valid task number -", err)
+				fmt.Println(arg, "is not a valid task number -", err)
+				return
 			}
 			if i < 1 || i > len(tasks) {
-				log.Fatalln("Task", args[0], "is not available in the list")
+				fmt.Println("Task", args[0], "is not available in the list")
+				return
 			}
 
 			checkedTask := tasks[i-1]
@@ -67,10 +69,10 @@ func runCheck(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	err = td.WriteTasks(projectFile, tasks)
-	if err != nil {
-		log.Fatalf("Write tasks error: %v\n", err)
+	if err = td.WriteTasks(wpFile, tasks); err != nil {
+		log.Fatalf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowAll, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowAll)
 }

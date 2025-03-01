@@ -5,13 +5,11 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var project string
 var configFile string
 
 var sep = string(os.PathSeparator)
@@ -41,7 +39,7 @@ func init() {
 
 	home, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Unable to detect home directory: %v\n", err)
+		log.Fatalf("unable to detect home directory: %v\n", err)
 	}
 
 	// Set flag for file to store config
@@ -55,7 +53,7 @@ func initConfig() {
 	} else {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			log.Println("Unable to detect home directory.")
+			log.Fatalf("unable to detect home directory: %v\n", err)
 		}
 
 		viper.AddConfigPath(filepath.Join(home, ".td"))
@@ -68,23 +66,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Error reading config file: %s\n", err)
 	}
-
-	project = viper.GetString("project")
-}
-
-// argsToPositions converts passed arguments (strings) into positions (integers).
-func argsToPositions(args []string, tasksCount int) []int {
-	positions := make([]int, 0, len(args))
-	for _, arg := range args {
-		p, err := strconv.Atoi(arg)
-		if err != nil {
-			log.Fatalln(arg, "is not a valid task number -", err)
-		}
-		if p < 1 || p > tasksCount {
-			log.Fatalln("Task", arg, "is not available in the list")
-		}
-		positions = append(positions, p)
-	}
-
-	return positions
 }

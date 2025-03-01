@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"slices"
 
 	"github.com/brythnl/td/td"
-
 	"github.com/spf13/cobra"
 )
 
@@ -33,31 +33,38 @@ func removeTasks(tasks []td.Task, positions []int) []td.Task {
 }
 
 func runRemove(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
 
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Fatalf("Read tasks error: %v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	if removeAllOpt {
 		tasks = []td.Task{}
 	} else {
 		if len(args) < 1 {
-			log.Fatalln("Provide at least one task (number) to remove")
+			fmt.Println("Provide at least one task (number) to remove")
+			return
+		}
+		positions, err := td.ArgsToPositions(args, len(tasks))
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 
-		tasks = removeTasks(tasks, argsToPositions(args, len(tasks)))
+		tasks = removeTasks(tasks, positions)
 		td.OrderPositions(tasks)
 	}
 
-	err = td.WriteTasks(projectFile, tasks)
+	err = td.WriteTasks(wpFile, tasks)
 	if err != nil {
-		log.Fatalf("Write tasks error: %v\n", err)
+		log.Fatalf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowAll, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowAll)
 }

@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
 	"github.com/brythnl/td/td"
-
 	"github.com/spf13/cobra"
 )
 
@@ -22,36 +22,39 @@ func init() {
 }
 
 func runEdit(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Fatalf("Read tasks error: %v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	if len(args) != 2 {
-		log.Fatalln(
+		fmt.Println(
 			"Invalid number of arguments. Please provide a task number and a new description.",
 		)
+		return
 	}
 	p, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Fatalln(
+		fmt.Println(
 			"Invalid task number. Please provide a valid task number for the first argument.",
 		)
+		return
 	}
 	if p < 1 || p > len(tasks) {
-		log.Fatalln("Task", p, "is not available in the list")
+		fmt.Println("Task", p, "is not available in the list")
+		return
 	}
 
 	tasks[p-1].Text = args[1]
 
-	err = td.WriteTasks(projectFile, tasks)
-	if err != nil {
-		log.Fatalf("Write tasks error: %v\n", err)
+	if err = td.WriteTasks(wpFile, tasks); err != nil {
+		log.Fatalf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowUnchecked, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowUnchecked)
 }

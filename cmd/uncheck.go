@@ -25,11 +25,11 @@ func init() {
 }
 
 func runUncheck(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
 		log.Fatalf("Unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
 		log.Fatalf("Read tasks error: %v\n", err)
 	}
@@ -55,10 +55,11 @@ func runUncheck(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	err = td.WriteTasks(projectFile, tasks)
+	err = td.WriteTasks(wpFile, tasks)
 	if err != nil {
 		log.Fatalf("Write tasks error: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowAll, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowAll)
 }

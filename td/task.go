@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 type Task struct {
@@ -67,14 +66,8 @@ const (
 	ShowUnchecked
 )
 
-// showTasks prints the tasks in the given slice.
-func ShowTasks(tasks []Task, opt ShowOption, projectName string) {
-	header := "Project: " + projectName
-	sep := strings.Repeat("=", len(header))
-	fmt.Println(sep)
-	fmt.Println(header)
-	fmt.Println(sep)
-
+// printTasks prints the tasks in the given tasks slice.
+func PrintTasks(tasks []Task, opt ShowOption) {
 	if len(tasks) == 0 {
 		fmt.Println("All done!")
 		return
@@ -94,4 +87,21 @@ func ShowTasks(tasks []Task, opt ShowOption, projectName string) {
 			}
 		}
 	}
+}
+
+// argsToPositions converts passed arguments (strings) into positions (integers).
+func ArgsToPositions(args []string, tasksCount int) ([]int, error) {
+	positions := make([]int, 0, len(args))
+	for _, arg := range args {
+		p, err := strconv.Atoi(arg)
+		if err != nil {
+			return nil, fmt.Errorf(arg + " is not a valid task number")
+		}
+		if p < 1 || p > tasksCount {
+			return nil, fmt.Errorf("Task " + arg + " is not available in the list")
+		}
+		positions = append(positions, p)
+	}
+
+	return positions, nil
 }

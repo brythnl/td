@@ -19,13 +19,13 @@ func init() {
 }
 
 func runPrune(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Fatalf("Read tasks error: %v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	var checkedPositions []int
@@ -38,10 +38,11 @@ func runPrune(cmd *cobra.Command, args []string) {
 	tasks = removeTasks(tasks, checkedPositions)
 	td.OrderPositions(tasks)
 
-	err = td.WriteTasks(projectFile, tasks)
+	err = td.WriteTasks(wpFile, tasks)
 	if err != nil {
-		log.Fatalf("Write tasks error: %v\n", err)
+		log.Fatalf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowUnchecked, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowUnchecked)
 }

@@ -1,12 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
-
-	"github.com/brythnl/td/td"
-
 	"slices"
 
+	"github.com/brythnl/td/td"
 	"github.com/spf13/cobra"
 )
 
@@ -23,22 +22,28 @@ func init() {
 }
 
 func runMove(cmd *cobra.Command, args []string) {
-	projectName, projectFile, err := td.GetProject()
+	wpName, wpFile, err := td.GetWorkingProject()
 	if err != nil {
-		log.Fatalf("Unable to get current working project: %v\n", err)
+		log.Fatalf("unable to get current working project: %v\n", err)
 	}
-	tasks, err := td.ReadTasks(projectFile)
+	tasks, err := td.ReadTasks(wpFile)
 	if err != nil {
-		log.Fatalf("Read tasks error: %v\n", err)
+		log.Fatalf("unable to read tasks: %v\n", err)
 	}
 
 	if len(args) != 2 {
-		log.Fatalln(
+		fmt.Println(
 			"Invalid number of arguments. Please provide the task number to move and the target position.",
 		)
+		return
 	}
 
-	positions := argsToPositions(args, len(tasks))
+	positions, err := td.ArgsToPositions(args, len(tasks))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	currIdx, targetIdx := positions[0]-1, positions[1]-1
 	taskToMove := tasks[currIdx]
 
@@ -51,10 +56,10 @@ func runMove(cmd *cobra.Command, args []string) {
 
 	td.OrderPositions(tasks)
 
-	err = td.WriteTasks(projectFile, tasks)
-	if err != nil {
-		log.Fatalf("Write tasks error: %v\n", err)
+	if err = td.WriteTasks(wpFile, tasks); err != nil {
+		log.Fatalf("unable to write tasks: %v\n", err)
 	}
 
-	td.ShowTasks(tasks, td.ShowAll, projectName)
+	td.PrintHeader(wpName)
+	td.PrintTasks(tasks, td.ShowAll)
 }
